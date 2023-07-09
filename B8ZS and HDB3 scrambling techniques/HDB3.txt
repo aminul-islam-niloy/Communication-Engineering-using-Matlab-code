@@ -1,0 +1,68 @@
+
+
+
+
+
+
+
+
+counter = 0;
+lastbit = 1;
+The counter variable keeps track of the current position in the decoded sequence.
+The lastbit variable stores the value of the last bit encountered during the decoding process. It starts with a value of 1.
+matlab
+Copy code
+% digital decoding..
+This comment indicates the start of the digital decoding process.
+matlab
+Copy code
+for i = 1:length(t)
+This loop iterates over each sample in the time vector t, which represents the time axis of the received signal.
+matlab
+Copy code
+  if t(i)>counter
+This condition checks if the current time t(i) is greater than the counter. This condition helps in identifying when to perform the decoding logic for the next bit.
+matlab
+Copy code
+    counter = counter + 1;
+If the current time is greater than the counter, it means we have reached the time interval for the next bit. So, the counter is incremented to move to the next position in the decoded sequence.
+matlab
+Copy code
+    if x(i)==lastbit
+      result(counter-3:counter) = 0;
+    else
+This condition checks if the current sample in the received signal x(i) is the same as the last bit encountered (lastbit).
+If they are the same, it means four consecutive zeros were transmitted, so the decoded bits in the result sequence from counter-3 to counter are assigned a value of 0.
+matlab
+Copy code
+      if(x(i)==0)
+        result(counter) = 0;
+      else
+        result(counter) = 1;
+        lastbit = -lastbit;
+      end
+    end
+  end
+end
+If the current sample x(i) is not the same as the last bit encountered, it means a non-zero bit was transmitted.
+If the current sample is 0, it is decoded as 0 and assigned to the corresponding position in the result sequence (counter).
+If the current sample is not 0, it is decoded as 1 and assigned to the corresponding position in the result sequence (counter).
+Additionally, the lastbit is toggled by changing its sign to account for the transition between consecutive non-zero bits.
+Here's an example of how this code works with some sample input:
+
+Suppose the received signal x contains the following values: [1 -1 -1 0 0 1 1 1 1 -1 -1 1 1].
+The time vector t corresponds to the time intervals of the received signal.
+
+Initially, the counter is 0, and the lastbit is 1.
+
+The loop iterates over each sample in t.
+
+At t(1), the counter is 0, so it gets incremented to 1. The first sample of x is 1, which is different from the lastbit. So, the first position in the result sequence (result(1)) is assigned a value of 1, and the lastbit becomes -1.
+
+At t(2), the counter is 1. The second sample of x is -1, which is the same as the lastbit. So, the bits from counter-3 to counter in the result sequence (result(1:4)) are assigned a value of 0.
+
+The loop continues in a similar manner, decoding the remaining samples in x based on the conditions and updating the result sequence and lastbit accordingly.
+
+After the loop completes, the result sequence will contain the decoded bits based on the HDB3 decoding scheme.
+
+Please note that the provided example is for illustration purposes, and the actual behavior of the code may vary depending on the specific input signal.
